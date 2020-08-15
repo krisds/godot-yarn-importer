@@ -10,38 +10,38 @@ extends "res://yarn/yarn-importer.gd"
 # You might also have multiple types of story GUIs, 
 #  then you'd want one of these for each type of GUI
 
-var scene
-var dialog
-var choices
-
 func connect_scene(parent, scene_dialog, scene_choices):
-	scene = parent
-	dialog = scene_dialog
-	choices = scene_choices
+	.set_scene(parent)
 
 func yarn_text_variables(text):
-	if text.find('$') != -1:
-		text = text.replace('$PlayerFirst', game.data['first'])
-		text = text.replace('$PlayerLast', game.data['last'])
-		text = text.replace('$PlayerFull', game.data['full'])
+	# TODO Support actual expressions.
+	if text.find('{$') != -1:
+		text = text.replace('{$name}', game.data['name'])
 	return text
 
 func story_setting(setting, value):
 	pass
 
-func say(text):
-	scene.create_dialog(text)
+func say(character, line):
+	scene.create_dialog(character, line)
 	
-func choice(text, marker):
-	scene.create_choice(text, marker)
+func choice(text, node_name):
+	scene.create_choice(text, node_name)
 
-func logic(instruction, command):
-	pass
+func jump(node_name):
+	scene.jump_to(node_name)
+
+func command(text) -> bool:
+	print('COMMAND: %s' % [text])
+	if .command(text):
+		return true
+	else:
+		return false
 	
 func action(text):
 	pass
-	
-func yarn_custom_logic(to):
+
+func yarn_starts_unraveling(to):
 	if not to in game.counters:
 		game.counters[to] = 0
 	game.counters[to] = game.counters[to] + 1

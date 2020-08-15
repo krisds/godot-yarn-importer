@@ -1,69 +1,39 @@
-title: start
-tags: 
-colorID: 0
-position: 567,90
+title: Start
+tags: yarnspinner syntax test
 ---
-Welcome to Godot Yarn Importer!
-Included is a simple class to load a "*.yarn.txt" file.
-With that, you'll get a data structure you can use to run dialog+choices branches for interactive stories.
-[[Example Choice A|choice-a]]
-[[Example Choice B|choice-b]]
+Welcome, {$name}!
+
+Let me spin you a Yarn of epic proportions...
+
+[[Speak to me, talespinner !|About Yarn]]
+[[Enough. Let the people speak !|Named dialogue]]
 ===
-title: choice-a
-tags: 
-colorID: 0
-position: 221,330
+
+
+title: Named dialogue
 ---
-You've chosen choice A!
-This would be some text for choice A path.
-[[Example Choice B|choice-b]]
-[[Example Choice C|choice-c]]
+Player: Hey, Sally.
+Sally: Oh! Hi.
+Sally: You snuck up on me.
+
+<<wait 2>>
+
+[[Start]]
 ===
-title: choice-b
-tags: 
-colorID: 0
-position: 910,384
+
+
+title: About Yarn
 ---
-This is text for example choice B.
-Think you can get back to the start?
-[[Example Choice A|choice-a]]
-[[Example Choice C|choice-c]]
+Yarn Spinner helps you build branching narrative and dialogue in games.
+It's easy for writers to use, and has powerful features for integrating your content straight into your game.
+
+<<wait 4>>
+
+[[Start]]
 ===
-title: choice-c
-tags: 
-colorID: 0
-position: 574,498
+
+
+tags: bad header
 ---
-This is text for Example Choice C.
-Exciting huh?
-[[Example Choice A|choice-a]]
-[[Example Choice B|choice-b]]
-[[Example Choice C|choice-c]]
-[[Variable Replace|replace]]
-[[Code Node|code-example]]
-[[Back to Start|start]]
-===
-title: replace
-tags: 
-colorID: 0
-position: 849,665
----
-Variable Replace Demo!
-First Name: $PlayerFirst
-Last Name: $PlayerLast
-Full Nane: $PlayerFull
-[[Back to Start|start]]
-===
-title: code:code-example
-tags: 
-colorID: 0
-position: 214,663
----
-say("Let's run some code!")
-print('A print statement to console.')
-if game.data['first'] == 'Dave':
-    say('Is your name is Dave?')
-else:
-    say('Is your name ' +game.data['first'] + '?')
-[[start]]
+Bad bad bad.
 ===
