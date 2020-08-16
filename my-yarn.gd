@@ -32,7 +32,6 @@ func jump(node_name):
 	scene.jump_to(node_name)
 
 func command(text) -> bool:
-	print('COMMAND: %s' % [text])
 	if .command(text):
 		return true
 	else:

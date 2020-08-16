@@ -16,7 +16,7 @@ Player: Hey, Sally.
 Sally: Oh! Hi.
 Sally: You snuck up on me.
 
-<<wait 2>>
+<<wait 1>>
 
 [[Start]]
 ===
@@ -27,7 +27,7 @@ title: About Yarn
 Yarn Spinner helps you build branching narrative and dialogue in games.
 It's easy for writers to use, and has powerful features for integrating your content straight into your game.
 
-<<wait 4>>
+<<wait 2>>
 
 [[Start]]
 ===

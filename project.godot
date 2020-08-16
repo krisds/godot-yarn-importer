@@ -8,9 +8,44 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Reference",
+"class": "YarnAction",
+"language": "GDScript",
+"path": "res://yarn/yarn-action.gd"
+}, {
+"base": "YarnAction",
+"class": "YarnCommand",
+"language": "GDScript",
+"path": "res://yarn/yarn-command.gd"
+}, {
+"base": "YarnAction",
+"class": "YarnDialogue",
+"language": "GDScript",
+"path": "res://yarn/yarn-dialogue.gd"
+}, {
+"base": "YarnAction",
+"class": "YarnJump",
+"language": "GDScript",
+"path": "res://yarn/yarn-jump.gd"
+}, {
+"base": "Reference",
+"class": "YarnNode",
+"language": "GDScript",
+"path": "res://yarn/yarn-node.gd"
+}, {
+"base": "YarnAction",
+"class": "YarnOption",
+"language": "GDScript",
+"path": "res://yarn/yarn-option.gd"
+} ]
 _global_script_class_icons={
-
+"YarnAction": "",
+"YarnCommand": "",
+"YarnDialogue": "",
+"YarnJump": "",
+"YarnNode": "",
+"YarnOption": ""
 }
 
 [application]

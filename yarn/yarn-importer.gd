@@ -48,11 +48,10 @@ func command(text: String) -> bool:
 		if not text.empty():
 			time_sec = float(text)
 		
-		print('TREE', scene.get_tree())
 		lock()
 		yield(scene.get_tree().create_timer(time_sec), "timeout")
-		print('AFTER %s' % [time_sec])
 		unlock()
+
 		return true
 	else:
 		return false
@@ -65,14 +64,6 @@ func yarn_text_variables(text: String) -> String:
 func story_setting(setting, value):
 	pass
 	
-# called for each node name
-func yarn_starts_unraveling(to: String):
-	pass
-
-# called for each node name (after)
-func yarn_stops_unraveling(to: String):
-	pass
-
 # START SPINNING YOUR YARN
 #
 func spin_yarn(file):
@@ -92,16 +83,7 @@ func spin_yarn(file):
 	# First node unravel...
 	# yarn_unravel(start_thread)
 
-# Internally create a new node (during loading)
-# TODO Do a class version of this ?
-func _new_node() -> Dictionary:
-	return {
-		'header': {},
-		'dialogue': []
-	}
-
-# Internally create a new fibre (during loading)
-func _new_dialogue_line(line: String):
+func _new_action(line: String) -> YarnAction:
 	# choice
 	if (line.begins_with('[[') and line.ends_with(']]')):
 		line = line.substr(2, line.length() - 4).strip_edges()
@@ -111,25 +93,14 @@ func _new_dialogue_line(line: String):
 		if pipe >= 0:
 			var text = line.substr(0, pipe).strip_edges()
 			var node_name = line.substr(pipe + 1).strip_edges()
-			
-			return {
-				'kind': 'choice',
-				'text': text,
-				'node_name': node_name
-			}
+			return YarnOption.new(text, node_name)
 		else:
-			return {
-				'kind': 'jump',
-				'node_name': line
-			}
+			return YarnJump.new(line)
 			
 	# commands
 	elif (line.begins_with('<<') and line.ends_with('>>')):
 		line = line.substr(2, line.length() - 4).strip_edges()
-		return {
-			'kind': 'command',
-			'text': line
-		}
+		return YarnCommand.new(line)
 	
 	# TODO shortcut options
 	# TODO set values
@@ -142,11 +113,7 @@ func _new_dialogue_line(line: String):
 		if colon >= 0:
 			character_name = line.substr(0, colon)
 			line = line.substr(colon + ': '.length())
-		return {
-			'kind': 'line_of_dialogue',
-			'character': character_name,
-			'line': line
-		}
+		return YarnDialogue.new(character_name, line)
 
 # Create Yarn data structure from file (must be *.yarn.txt Yarn format)
 func load_yarn(path):
@@ -161,7 +128,7 @@ func load_yarn(path):
 	if file.is_open():
 		# yarn reading flags
 		var header := true
-		var node := _new_node()
+		var node := YarnNode.new()
 		var line_number := 0
 		
 		# loop
@@ -177,7 +144,7 @@ func load_yarn(path):
 			if header:
 				if line == '---':
 					header = false
-					if not node['header'].has('title'):
+					if not node.header.has('title'):
 						print('[ERROR] Line %s : header closed without a title' % [line_number])
 						node['header']['title'] = 'Anonymous Node %s' % [line_number]
 						continue
@@ -193,22 +160,23 @@ func load_yarn(path):
 
 					# TODO If key == 'tags', split value ?
 
-					node['header'][key] = value
+					node.header[key] = value
 
 			else:
 				if line == '===':
 					header = true
-					yarn['threads'][node['header']['title']] = node
+					yarn['threads'][node.header['title']] = node
 					if not yarn['start']:
-						yarn['start'] = node['header']['title']
-					node = _new_node()
+						yarn['start'] = node.header['title']
+					node = YarnNode.new()
 
 				else:
-					var dialogue_line = _new_dialogue_line(line)
-					if dialogue_line:
-						node['dialogue'].append(dialogue_line)
+					var action = _new_action(line)
+					if action:
+						node.body.append(action)
 	else:
 		print('ERROR: Yarn file missing: ', filename)
+		
 	return yarn
 
 # Main logic for node handling
@@ -217,54 +185,24 @@ func yarn_unravel(to):
 	node = yarn['threads'][to]
 	next_step = 0
 
-func _foo(to):
-	yarn_starts_unraveling(to)
-	if to in yarn['threads']:
-		var node = yarn['threads'][to]
-		for line in node['dialogue']:
-			match line['kind']:
-				'line_of_dialogue':
-					var character: String = line['character']
-					var text : String = yarn_text_variables(line['line'])
-					# TODO Use character name as well !
-					say(character, text)
-				'choice':
-					var text : String = yarn_text_variables(line['text'])
-					var node_name : String = line['node_name']
-					choice(text, node_name)
-				'jump':
-					var node_name : String = line['node_name']
-					jump(node_name)
-				'command':
-					var text = line['text']
-					command(text)
-	else:
-		print('WARNING: Missing Yarn node: ', to, ' in file ',yarn['file'])
-	yarn_stops_unraveling(to)
-
 func can_step() -> bool:
-	return not locked and node != null and next_step < node['dialogue'].size()
+	return not locked and node != null and next_step < node.body.size()
 
 func step() -> void:
 	if not can_step(): return
-	var line = node['dialogue'][next_step]
+	var action : YarnAction = node.body[next_step]
 	next_step += 1
-	match line['kind']:
-		'line_of_dialogue':
-			var character: String = line['character']
-			var text : String = yarn_text_variables(line['line'])
-			# TODO Use character name as well !
-			say(character, text)
-		'choice':
-			var text : String = yarn_text_variables(line['text'])
-			var node_name : String = line['node_name']
-			choice(text, node_name)
-		'jump':
-			var node_name : String = line['node_name']
-			jump(node_name)
-		'command':
-			var text = line['text']
-			command(text)
+	match action.kind:
+		YarnAction.Type.DIALOGUE:
+			var text : String = yarn_text_variables(action.text)
+			say(action.character, text)
+		YarnAction.Type.OPTION:
+			var text : String = yarn_text_variables(action.text)
+			choice(text, action.to_node_name)
+		YarnAction.Type.JUMP:
+			jump(action.to_node_name)
+		YarnAction.Type.COMMAND:
+			command(action.text)
 	
 func lock():
 	locked = true
