@@ -38,6 +38,11 @@ _global_script_classes=[ {
 "class": "YarnOption",
 "language": "GDScript",
 "path": "res://yarn/yarn-option.gd"
+}, {
+"base": "Reference",
+"class": "YarnScript",
+"language": "GDScript",
+"path": "res://yarn/yarn-script.gd"
 } ]
 _global_script_class_icons={
 "YarnAction": "",
@@ -45,7 +50,8 @@ _global_script_class_icons={
 "YarnDialogue": "",
 "YarnJump": "",
 "YarnNode": "",
-"YarnOption": ""
+"YarnOption": "",
+"YarnScript": ""
 }
 
 [application]

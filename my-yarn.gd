@@ -10,7 +10,7 @@ extends "res://yarn/yarn-importer.gd"
 # You might also have multiple types of story GUIs, 
 #  then you'd want one of these for each type of GUI
 
-func connect_scene(parent, scene_dialog, scene_choices):
+func connect_scene(parent):
 	.set_scene(parent)
 
 func yarn_text_variables(text):
@@ -39,9 +39,3 @@ func command(text) -> bool:
 	
 func action(text):
 	pass
-
-func yarn_starts_unraveling(to):
-	if not to in game.counters:
-		game.counters[to] = 0
-	game.counters[to] = game.counters[to] + 1
-	scene.set_visit_label("STATS: You've visited '"+to+"' "+str(game.counters[to])+" times.")

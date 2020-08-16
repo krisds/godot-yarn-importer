@@ -14,7 +14,7 @@ extends Node
 #
 # Yarn syntax reference: https://yarnspinner.dev/docs/syntax/
 
-var yarn = {}
+var yarn_script : YarnScript
 
 var locked = false
 var node = null
@@ -67,122 +67,15 @@ func story_setting(setting, value):
 # START SPINNING YOUR YARN
 #
 func spin_yarn(file):
-	yarn = load_yarn(file)
+	yarn_script = YarnScript.new()
+	yarn_script.load(file)
 	# Find the starting node...
-	node = yarn['threads'][yarn['start']]
-	# Load any scene-specific settings
-	# (Not part of official Yarn standard)
-	if 'settings' in yarn['threads']:
-		var settings = yarn['threads']['settings']
-		for fibre in settings['dialogue']:
-			var line = fibre['text']
-			var split = line.split('=')
-			var setting = split[0].strip_edges(true, true)
-			var value = split[1].strip_edges(true, true)
-			story_setting(setting, value)
-	# First node unravel...
-	# yarn_unravel(start_thread)
-
-func _new_action(line: String) -> YarnAction:
-	# choice
-	if (line.begins_with('[[') and line.ends_with(']]')):
-		line = line.substr(2, line.length() - 4).strip_edges()
-
-		var pipe = line.find('|')
-		
-		if pipe >= 0:
-			var text = line.substr(0, pipe).strip_edges()
-			var node_name = line.substr(pipe + 1).strip_edges()
-			return YarnOption.new(text, node_name)
-		else:
-			return YarnJump.new(line)
-			
-	# commands
-	elif (line.begins_with('<<') and line.ends_with('>>')):
-		line = line.substr(2, line.length() - 4).strip_edges()
-		return YarnCommand.new(line)
-	
-	# TODO shortcut options
-	# TODO set values
-	# TODO conditionals
-	# TODO expressions
-	else:
-		# dialogue line
-		var character_name : String = ''
-		var colon = line.find(': ')
-		if colon >= 0:
-			character_name = line.substr(0, colon)
-			line = line.substr(colon + ': '.length())
-		return YarnDialogue.new(character_name, line)
-
-# Create Yarn data structure from file (must be *.yarn.txt Yarn format)
-func load_yarn(path):
-	var yarn = {}
-	yarn['threads'] = {}
-	yarn['start'] = false
-	yarn['file'] = path
-	
-	var file := File.new()
-	file.open(path, file.READ)
-	
-	if file.is_open():
-		# yarn reading flags
-		var header := true
-		var node := YarnNode.new()
-		var line_number := 0
-		
-		# loop
-		while !file.eof_reached():
-			# read a line
-			var line := file.get_line()
-			line_number += 1
-			
-			# Skip empty lines
-			if line.strip_edges().empty():
-				continue
-			
-			if header:
-				if line == '---':
-					header = false
-					if not node.header.has('title'):
-						print('[ERROR] Line %s : header closed without a title' % [line_number])
-						node['header']['title'] = 'Anonymous Node %s' % [line_number]
-						continue
-					
-				else:
-					var split := line.split(':', 1)
-					if split.size() < 2:
-						print('[ERROR] Line %s : invalid header line: %s' % [line_number, line])
-						continue
-
-					var key := split[0]
-					var value := split[1].strip_edges()
-
-					# TODO If key == 'tags', split value ?
-
-					node.header[key] = value
-
-			else:
-				if line == '===':
-					header = true
-					yarn['threads'][node.header['title']] = node
-					if not yarn['start']:
-						yarn['start'] = node.header['title']
-					node = YarnNode.new()
-
-				else:
-					var action = _new_action(line)
-					if action:
-						node.body.append(action)
-	else:
-		print('ERROR: Yarn file missing: ', filename)
-		
-	return yarn
+	node = yarn_script.get_node(yarn_script.start_node_name)
 
 # Main logic for node handling
 #
-func yarn_unravel(to):
-	node = yarn['threads'][to]
+func yarn_unravel(to: String) -> void:
+	node = yarn_script.get_node(to)
 	next_step = 0
 
 func can_step() -> bool:

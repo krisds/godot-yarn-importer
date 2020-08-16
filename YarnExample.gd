@@ -10,7 +10,7 @@ var last_character = null
 func _ready():
 	var yarn_gd = load('res://my-yarn.gd')
 	yarn = yarn_gd.new()
-	yarn.connect_scene(self, dialog, choices)
+	yarn.connect_scene(self)
 	yarn.spin_yarn('res://data/scene-example.yarn.txt')
 	populate_settings()
 
