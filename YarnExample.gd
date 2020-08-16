@@ -3,20 +3,22 @@ extends Control
 onready var dialog = $PageVBox/PageHBox/DialogVBox/DialogScroll/Dialog/Margin/VBox
 onready var choices = $PageVBox/PageHBox/ChoicesVBox/Choices/Margin/VBox
 
-var yarn
+var spinner : YarnSpinner
+var needlework : YarnNeedlework
 
 var last_character = null
 
 func _ready():
-	var yarn_gd = load('res://my-yarn.gd')
-	yarn = yarn_gd.new()
-	yarn.connect_scene(self)
-	yarn.spin_yarn('res://data/scene-example.yarn.txt')
-	populate_settings()
+	needlework = MyYarnNeedlework.new()
+	needlework.scene = self
+	
+	spinner = YarnSpinner.new()
+	spinner.set_needlework(needlework)
+	spinner.load('res://data/scene-example.yarn.txt')
 
 func _process(delta):
-	while yarn.can_step():
-		yarn.step()
+	while spinner.can_spin():
+		spinner.spin()
 
 func create_dialog(character: String, line: String) -> void:
 	if last_character != null and last_character != character:
@@ -46,22 +48,17 @@ func on_choice_press(node_name):
 		child.queue_free()
 	last_character = null
 	add_separator(dialog)
-	# jump to next node
-	yarn.yarn_unravel(node_name)
+	spinner.pick(node_name)
 
 func jump_to(node_name):
 	last_character = null
 	add_separator(dialog)
-	# jump to next node
-	yarn.yarn_unravel(node_name)
+	spinner.pick(node_name)
 
 func add_separator(to):
 	if to.get_child_count()>0:
 		var separator = HSeparator.new()
 		to.add_child(separator)
-	
-func populate_settings():
-	pass
 
 func set_visit_label(text):
 	$PageVBox/Bottom/VBoxContainer/VisitLabel.set_text(text)

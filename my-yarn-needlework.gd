@@ -1,4 +1,6 @@
-extends "res://yarn/yarn-importer.gd"
+extends YarnNeedlework
+
+class_name MyYarnNeedlework
 
 # An example extended class of "yarn-importer"
 #
@@ -10,17 +12,11 @@ extends "res://yarn/yarn-importer.gd"
 # You might also have multiple types of story GUIs, 
 #  then you'd want one of these for each type of GUI
 
-func connect_scene(parent):
-	.set_scene(parent)
-
-func yarn_text_variables(text):
+func handle_inline_expressions(text):
 	# TODO Support actual expressions.
 	if text.find('{$') != -1:
 		text = text.replace('{$name}', game.data['name'])
 	return text
-
-func story_setting(setting, value):
-	pass
 
 func say(character, line):
 	scene.create_dialog(character, line)
