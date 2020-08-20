@@ -1,6 +1,6 @@
-extends YarnStatement
+extends YarnBlock
 
-class_name YarnCommand
+class_name YarnShortcutOption
 
 var text : String
 

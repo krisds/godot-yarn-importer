@@ -14,7 +14,10 @@ func _ready():
 	
 	spinner = YarnSpinner.new()
 	spinner.set_needlework(needlework)
-	spinner.load('res://data/scene-example.yarn.txt')
+	spinner.load('res://data/scene-example.yarn')
+	# spinner.load('res://data/tests/Options.yarn')
+	# spinner.load('res://data/tests/Example.yarn')
+	# spinner.load('res://data/tests/Headers.yarn')
 
 func _process(delta):
 	while spinner.can_spin():
@@ -53,7 +56,7 @@ func on_choice_press(node_name):
 func jump_to(node_name):
 	last_character = null
 	add_separator(dialog)
-	spinner.pick(node_name)
+	spinner.goto(node_name)
 
 func add_separator(to):
 	if to.get_child_count()>0:

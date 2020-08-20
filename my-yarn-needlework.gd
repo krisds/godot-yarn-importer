@@ -21,8 +21,9 @@ func handle_inline_expressions(text):
 func say(character, line):
 	scene.create_dialog(character, line)
 	
-func choice(text, node_name):
-	scene.create_choice(text, node_name)
+func choose(labels: Array) -> void:
+	for i in range(0, labels.size()):
+		scene.create_choice(labels[i], i)
 
 func jump(node_name):
 	scene.jump_to(node_name)

@@ -32,6 +32,9 @@ func load(_path) -> void:
 	
 	# loop
 	while !file.eof_reached():
+		var blocks  = [node.body]
+		var indents = [0]
+		
 		# read a line
 		var line := file.get_line()
 		line_number += 1
@@ -51,7 +54,7 @@ func load(_path) -> void:
 			else:
 				var split := line.split(':', 1)
 				if split.size() < 2:
-					print('[ERROR] Line %s : invalid header line: %s' % [line_number, line])
+					print('[ERROR] Line %s : invalid header line : %s' % [line_number, line])
 					continue
 
 				var key := split[0]
@@ -68,12 +71,25 @@ func load(_path) -> void:
 				node = YarnNode.new()
 
 			else:
-				var action = _new_action(line)
-				if action:
-					node.body.append(action)
+				var indent = _indent_of(line)
+				# print(indent, ' ', line)
+				
+				while indent < indents[-1]:
+					blocks.pop_back()
+					indents.pop_back()
+				
+				if indent > indents[-1]:
+					if blocks[-1].get_statement(-1) is YarnBlock:
+						blocks.append(blocks[-1].get_statement(-1))
+					else:
+						print('[ERROR] Line  %s : nested statement outside of a block: %s' % [line_number, line])
+				
+				var statement = _new_statement(line.strip_edges())
+				if statement:
+					blocks[-1].append(statement)
 
 
-func _new_action(line: String) -> YarnAction:
+func _new_statement(line: String) -> YarnStatement:
 	# choice
 	if (line.begins_with('[[') and line.ends_with(']]')):
 		line = line.substr(2, line.length() - 4).strip_edges()
@@ -93,6 +109,10 @@ func _new_action(line: String) -> YarnAction:
 		return YarnCommand.new(line)
 	
 	# TODO shortcut options
+	elif line.begins_with('->'):
+		line = line.substr(2).strip_edges()
+		return YarnShortcutOption.new(line)
+		
 	# TODO set values
 	# TODO conditionals
 	# TODO expressions
@@ -104,4 +124,11 @@ func _new_action(line: String) -> YarnAction:
 			character_name = line.substr(0, colon)
 			line = line.substr(colon + ': '.length())
 		return YarnDialogue.new(character_name, line)
+
+
+func _indent_of(line: String) -> int:
+	var indent : int = 0
+	while indent < line.length() and (line[indent] == ' ' || line[indent] == '\t'):
+		indent += 1
+	return indent
 

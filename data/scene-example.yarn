@@ -1,26 +1,18 @@
 title: Start
 tags: yarnspinner syntax test
 ---
-Welcome, {$name}!
+Welcome, {$name}, to a world of Yarn.
 
-Let me spin you a Yarn of epic proportions...
-
-[[Speak to me, talespinner !|About Yarn]]
-[[Enough. Let the people speak !|Named dialogue]]
+[[Learn More]]
 ===
 
-
-title: Named dialogue
+title: Learn More
 ---
-Player: Hey, Sally.
-Sally: Oh! Hi.
-Sally: You snuck up on me.
+I'm at your service.
 
-<<wait 1>>
-
-[[Start]]
+[[What is Yarn ?|About Yarn]]
+[[I have no more questions.|End]]
 ===
-
 
 title: About Yarn
 ---
@@ -33,7 +25,7 @@ It's easy for writers to use, and has powerful features for integrating your con
 ===
 
 
-tags: bad header
+title: End
 ---
-Bad bad bad.
+Thank you for trying Yarn.
 ===

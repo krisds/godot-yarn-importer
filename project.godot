@@ -14,22 +14,22 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://my-yarn-needlework.gd"
 }, {
-"base": "Reference",
-"class": "YarnAction",
+"base": "YarnStatement",
+"class": "YarnBlock",
 "language": "GDScript",
-"path": "res://yarn/yarn-action.gd"
+"path": "res://yarn/yarn-block.gd"
 }, {
-"base": "YarnAction",
+"base": "YarnStatement",
 "class": "YarnCommand",
 "language": "GDScript",
 "path": "res://yarn/yarn-command.gd"
 }, {
-"base": "YarnAction",
+"base": "YarnStatement",
 "class": "YarnDialogue",
 "language": "GDScript",
 "path": "res://yarn/yarn-dialogue.gd"
 }, {
-"base": "YarnAction",
+"base": "YarnStatement",
 "class": "YarnJump",
 "language": "GDScript",
 "path": "res://yarn/yarn-jump.gd"
@@ -44,7 +44,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://yarn/yarn-node.gd"
 }, {
-"base": "YarnAction",
+"base": "YarnStatement",
 "class": "YarnOption",
 "language": "GDScript",
 "path": "res://yarn/yarn-option.gd"
@@ -54,14 +54,24 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://yarn/yarn-script.gd"
 }, {
+"base": "YarnBlock",
+"class": "YarnShortcutOption",
+"language": "GDScript",
+"path": "res://yarn/yarn-shortcut-option.gd"
+}, {
 "base": "Reference",
 "class": "YarnSpinner",
 "language": "GDScript",
 "path": "res://yarn/yarn-spinner.gd"
+}, {
+"base": "Reference",
+"class": "YarnStatement",
+"language": "GDScript",
+"path": "res://yarn/yarn-statement.gd"
 } ]
 _global_script_class_icons={
 "MyYarnNeedlework": "",
-"YarnAction": "",
+"YarnBlock": "",
 "YarnCommand": "",
 "YarnDialogue": "",
 "YarnJump": "",
@@ -69,7 +79,9 @@ _global_script_class_icons={
 "YarnNode": "",
 "YarnOption": "",
 "YarnScript": "",
-"YarnSpinner": ""
+"YarnShortcutOption": "",
+"YarnSpinner": "",
+"YarnStatement": ""
 }
 
 [application]

@@ -11,7 +11,7 @@ func say(character: String, line: String) -> void:
 	pass
 	
 # called to request new choice button
-func choice(text: String, node_name: String) -> void:
+func choose(labels: Array) -> void:
 	pass
 
 # called to jump to target node
