@@ -39,8 +39,9 @@ func load(_path) -> void:
 		var line := file.get_line()
 		line_number += 1
 		
-		# Skip empty lines
-		if line.strip_edges().empty():
+		# Skip empty lines and comments
+		var stripped_line = line.strip_edges()
+		if stripped_line.empty() and stripped_line.begins_with('//'):
 			continue
 		
 		if header:
